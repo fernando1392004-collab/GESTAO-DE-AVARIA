@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Relatório de Descarte</title>
 <link rel="manifest" href="manifest.webmanifest">
-<meta name="theme-color" content="#1d6b47">
+<meta name="theme-color" content="#087f78">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -98,6 +98,28 @@ input,select{border-radius:11px;background:var(--card);font-size:14px}
 .itemlist-head h2{margin:0}
 .empty{padding:24px 14px;text-align:center;color:var(--mut);font-size:13px;border:1px dashed var(--bd);border-radius:13px}
 
+/* iOS-inspired Liquid Glass polish */
+:root{--bg:#f3f7f5;--card:rgba(255,255,255,.78);--tx:#172b29;--mut:#788984;--bd:rgba(130,160,151,.22);--ac:#087f78;--act:#fff;--dg:#b45c55}
+body{background:radial-gradient(ellipse at 10% -8%,rgba(67,173,155,.12),transparent 36%),linear-gradient(160deg,#f5f8f6,#edf3f0);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif;letter-spacing:-.01em}
+#app{padding:30px 17px 116px}h1{font-size:29px;line-height:1.12;letter-spacing:-.055em;font-weight:680;margin:8px 0 20px}h2{font-size:10px;letter-spacing:.14em;font-weight:700;color:#87958f;margin:25px 0 11px}
+.eyebrow{font-size:9px;letter-spacing:.17em;font-weight:750;color:#82928b}.homehead{display:flex;align-items:center;justify-content:space-between;margin:2px 0 23px}.homehead h1{margin:6px 0 0}
+.settingsbtn{width:42px;height:42px;border-radius:15px;background:rgba(255,255,255,.72);border:1px solid var(--bd);box-shadow:0 5px 18px rgba(26,67,58,.06)}.settingsbtn svg{width:19px;height:19px}
+.home-summary,.taskcount{display:flex;justify-content:space-between;align-items:center;padding:15px 17px;border:1px solid rgba(125,165,153,.2);border-radius:18px;background:rgba(255,255,255,.55);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);color:var(--mut);font-size:12px}.home-summary strong{font-size:12px;color:var(--ac);font-weight:650}
+.big{background:rgba(255,255,255,.72);border:1px solid rgba(134,167,157,.22);border-radius:18px;box-shadow:0 8px 25px rgba(36,75,66,.045);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);padding:17px 42px 17px 17px;margin-bottom:9px}.big b{font-size:15px;font-weight:650;letter-spacing:-.025em}.big span{font-size:11px;color:var(--mut)}.big:after{border-color:#9baea7}
+.quicktask{width:100%;display:flex;align-items:center;gap:13px;text-align:left;padding:15px;border:1px solid var(--bd);border-radius:17px;background:rgba(255,255,255,.7);color:var(--tx);box-shadow:0 6px 22px rgba(36,75,66,.04)}.quicktask>svg{width:20px;height:20px;stroke:var(--ac);fill:none;stroke-width:1.6}.quicktask span{display:grid;gap:3px;flex:1}.quicktask b{font-size:13px}.quicktask small,.subtle{font-size:11px;color:var(--mut)}.quicktask strong{font-size:13px;color:var(--ac)}
+.bar{background:rgba(249,252,250,.76);border:1px solid rgba(145,176,166,.32);border-radius:21px;box-shadow:0 12px 38px rgba(26,62,54,.13);backdrop-filter:blur(30px) saturate(165%);-webkit-backdrop-filter:blur(30px) saturate(165%);width:min(540px,calc(100% - 26px));left:50%;right:auto;transform:translateX(-50%);bottom:calc(10px + env(safe-area-inset-bottom,0px));padding:7px}.bar>div{display:flex;align-items:center;justify-content:space-around;gap:3px}
+.navbtn{min-height:48px;gap:4px;color:#84928d;font-size:9px;font-weight:620;letter-spacing:0}.navbtn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.55;stroke-linecap:round;stroke-linejoin:round}.navbtn.active{color:var(--ac)}.navbtn.home{height:47px;width:52px;flex:0 0 52px;border-radius:15px;background:linear-gradient(145deg,#15998c,#08766f);box-shadow:0 5px 12px rgba(8,127,120,.2);color:#fff}
+.item{background:rgba(255,255,255,.72);border:1px solid rgba(135,165,155,.2);border-radius:14px;box-shadow:0 3px 14px rgba(28,64,56,.035);padding:11px 10px}.item .itemname{font-size:13px;font-weight:610}.item small{color:var(--mut)}.iconbtn{border-radius:10px}.itemlist-head{margin:24px 0 10px}.itemlist-head h2{margin:0}
+.btn{background:linear-gradient(145deg,#11978a,#08766f);box-shadow:0 5px 14px rgba(8,127,120,.15);border-radius:13px}.btn.sec{background:rgba(255,255,255,.72);border:1px solid var(--bd);color:var(--tx);box-shadow:none}
+#sheet .in{background:rgba(249,252,250,.94);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);border:1px solid rgba(255,255,255,.7);border-bottom:0;border-radius:25px 25px 0 0}
+.taskcount{margin:15px 0 22px;gap:15px}.taskcount>div{flex:1;display:grid;gap:4px}.taskcount small{font-size:10px;color:var(--mut)}.taskcount strong{font-size:23px;letter-spacing:-.05em;color:var(--tx)}
+.taskrow{display:flex;align-items:center;gap:12px;padding:13px 11px;margin:7px 0;border-radius:15px;background:rgba(255,255,255,.75);border:1px solid var(--bd);box-shadow:0 4px 16px rgba(30,67,59,.035)}
+.taskcheck{width:25px;height:25px;flex:none;border-radius:50%;border:1.4px solid #a6b9b1;background:transparent;color:white;display:grid;place-items:center;padding:3px}.taskcheck svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2}
+.taskcopy{flex:1;min-width:0;display:grid;gap:4px}.taskcopy b{font-size:13px;font-weight:650}.taskcopy small{font-size:10px;color:var(--mut)}.taskrow.isdone{opacity:.58}.taskrow.isdone .taskcheck{background:var(--ac);border-color:var(--ac)}.taskrow.isdone .taskcopy b{text-decoration:line-through}
+.settingrow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 13px;margin:9px 0;background:rgba(255,255,255,.72);border:1px solid var(--bd);border-radius:16px}.settingrow>span{display:flex;align-items:center;gap:11px;min-width:0}.settingrow>span>svg{width:20px;height:20px;stroke:var(--ac);fill:none;stroke-width:1.6;flex:none}.settingrow>span span{display:grid;gap:4px}.settingrow b{font-size:13px}.settingrow small{font-size:10px;color:var(--mut)}.settingrow .btn{width:auto;min-width:92px;padding:10px 12px;font-size:11px}
+.empty{background:rgba(255,255,255,.45);border:1px dashed rgba(130,160,151,.45);border-radius:15px}
+@media(prefers-color-scheme:dark){.bar{background:rgba(22,37,35,.78);border-color:rgba(110,148,139,.28)}.home-summary,.taskcount,.quicktask,.big,.item,.taskrow,.settingrow{background:rgba(27,43,41,.76)}#sheet .in{background:rgba(22,37,35,.96)}}
+
 </style>
 </head>
 <body>
@@ -113,7 +135,7 @@ pele:{nome:'Pele e Osso',sub:'Itens de açougue'},
 flv:{nome:'FLV',sub:'Descarte Hotfrut'}};
 const I=(n,u)=>({n,u,c:''}),G=(n,g)=>({n,u:'kg',c:'',g});
 const DEF={"folhagem":[{"n":"Alface regional","u":"un","c":""},{"n":"Cebolinha","u":"un","c":""},{"n":"Jambu","u":"un","c":"12938"},{"n":"Cheiro verde","u":"un","c":""},{"n":"Chicória","u":"un","c":"37497"},{"n":"Kit folhagem","u":"un","c":""},{"n":"Salsa","u":"un","c":""},{"n":"Agrião","u":"un","c":""},{"n":"Macaxeira","u":"kg","c":""},{"n":"Alface Hidropônicos","u":"un","c":"679091"},{"n":"Manjericão","u":"un","c":"2030"},{"n":"Vinagreira","u":"un","c":"38410"},{"n":"Alavanca","u":"un","c":"31005"},{"n":"Alfavaca","u":"un","c":"31005"},{"n":"Maxixe","u":"kg","c":"9865"},{"n":"Quiabo","u":"un","c":"9968"},{"n":"Quiabo","u":"kg","c":"9968"}],"pele":[{"n":"Osso Traseiro","u":"kg","c":"","g":"Traseiro"},{"n":"Pele Traseira","u":"kg","c":"","g":"Traseiro"},{"n":"Saco Traseiro","u":"kg","c":"","g":"Traseiro"},{"n":"Osso Dianteiro","u":"kg","c":"","g":"Dianteiro"},{"n":"Pele Dianteira","u":"kg","c":"","g":"Dianteiro"},{"n":"Saco Dianteiro","u":"kg","c":"","g":"Dianteiro"},{"n":"Cabeça de Lombo","u":"kg","c":"","g":"Caixaria"},{"n":"Pele PA/Costela","u":"kg","c":"","g":"Caixaria"},{"n":"Saco PA/Costela","u":"kg","c":"","g":"Caixaria"}],"flv":[{"n":"Tomate","u":"kg","c":""},{"n":"Brócolis","u":"kg","c":""},{"n":"Pitaya","u":"kg","c":""},{"n":"Alface americano","u":"kg","c":""},{"n":"Berinjela","u":"kg","c":""},{"n":"Maçã nacional","u":"kg","c":""},{"n":"Tangerina importada","u":"kg","c":""},{"n":"Limão","u":"kg","c":""},{"n":"Repolho verde","u":"kg","c":""},{"n":"Coco","u":"un","c":""},{"n":"Abacaxi","u":"un","c":""}]};
-let S={v:2,items:JSON.parse(JSON.stringify(DEF)),entries:{folhagem:[],pele:[],flv:[]}};
+let S={v:2,items:JSON.parse(JSON.stringify(DEF)),entries:{folhagem:[],pele:[],flv:[]},tasks:[]};
 let dip=null;addEventListener('beforeinstallprompt',e=>{e.preventDefault();dip=e;if(view==='home')render()});
 let view='home',sheet=null,photo=null,armed=false;
 const $=s=>document.querySelector(s);
@@ -123,7 +145,7 @@ function toast(m){const t=$('#toast');t.textContent=m;t.style.display='block';cl
 /* storage */
 let db=null;
 function openDb(){return new Promise(r=>{try{const q=indexedDB.open('descarte',1);q.onupgradeneeded=()=>q.result.createObjectStore('kv');q.onsuccess=()=>r(q.result);q.onerror=()=>r(null)}catch(e){r(null)}})}
-async function load(){db=await openDb();if(!db)return;try{const v=await new Promise(r=>{const q=db.transaction('kv').objectStore('kv').get('s');q.onsuccess=()=>r(q.result);q.onerror=()=>r(null)});if(v&&v.items){S=v;for(const k of Object.keys(DEF)){S.items[k]=Array.isArray(S.items[k])?S.items[k]:[];const seen=new Set(S.items[k].map(x=>x.n+'|'+x.u));DEF[k].forEach(it=>{if(!seen.has(it.n+'|'+it.u))S.items[k].push({...it})});S.entries[k]=Array.isArray(S.entries[k])?S.entries[k]:[]}}}catch(e){}migrate();save()}
+async function load(){db=await openDb();if(!db)return;try{const v=await new Promise(r=>{const q=db.transaction('kv').objectStore('kv').get('s');q.onsuccess=()=>r(q.result);q.onerror=()=>r(null)});if(v&&v.items){S=v;S.tasks=Array.isArray(S.tasks)?S.tasks:[];for(const k of Object.keys(DEF)){S.items[k]=Array.isArray(S.items[k])?S.items[k]:[];const seen=new Set(S.items[k].map(x=>x.n+'|'+x.u));DEF[k].forEach(it=>{if(!seen.has(it.n+'|'+it.u))S.items[k].push({...it})});S.entries[k]=Array.isArray(S.entries[k])?S.entries[k]:[]}}}catch(e){}migrate();save()}
 let st;function save(){clearTimeout(st);st=setTimeout(()=>{try{db&&db.transaction('kv','readwrite').objectStore('kv').put(S,'s')}catch(e){}},200)}
 /* helpers */
 const dt=()=>{const d=new Date(),p=n=>String(n).padStart(2,'0');return p(d.getDate())+'.'+p(d.getMonth()+1)+'.'+String(d.getFullYear()).slice(2)};
@@ -133,42 +155,47 @@ function totals(k){const m={},p={};S.entries[k].forEach(e=>{m[e.item]=(m[e.item]
 function compress(file){return new Promise(res=>{const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const m=900,s=Math.min(1,m/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=im.width*s;c.height=im.height*s;c.getContext('2d').drawImage(im,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',.7))};im.onerror=()=>res(null);im.src=r.result};r.onerror=()=>res(null);r.readAsDataURL(file)})}
 const GR=['Traseiro','Dianteiro','Caixaria'];
 const REN={'osso traseiro':['Osso Traseiro','Traseiro'],'pele traseira':['Pele Traseira','Traseiro'],'saco traseiro':['Saco Traseiro','Traseiro'],'osso diant':['Osso Dianteiro','Dianteiro'],'saco diant':['Saco Dianteiro','Dianteiro'],'pele diant':['Pele Dianteira','Dianteiro'],'cabeça de lombo (caixaria)':['Cabeça de Lombo','Caixaria'],'pele pa/costela':['Pele PA/Costela','Caixaria'],'saco pa/costela':['Saco PA/Costela','Caixaria']};
-function migrate(){if(S.v>=2)return;const map={};
+function migrate(){S.tasks=Array.isArray(S.tasks)?S.tasks:[];if(S.v>=2)return;const map={};
 S.items.pele=S.items.pele.map(it=>{const r=REN[it.n.toLowerCase()];if(r){map[it.n]=r[0];return{...it,n:r[0],u:'kg',g:r[1]}}return{...it,u:'kg',g:it.g||'Caixaria'}});
 S.entries.pele.forEach(e=>{if(map[e.item])e.item=map[e.item]});S.v=2}
 function ico(name){const p={home:'<path d="m3 10 9-7 9 7"/><path d="M5 9v11h14V9M9 20v-6h6v6"/>',leaf:'<path d="M20 4c-8 0-14 4-14 11a5 5 0 0 0 5 5c7 0 9-8 9-16Z"/><path d="M4 21c3-5 7-8 12-11"/>',layers:'<path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5M3 16l9 5 9-5"/>',box:'<path d="m4 7 8-4 8 4v10l-8 4-8-4V7Z"/><path d="m4 7 8 5 8-5M12 12v9"/>',edit:'<path d="m15 5 4 4M4 20l4-.8L19 8a2.1 2.1 0 0 0-3-3L5 16l-1 4Z"/>',trash:'<path d="M4 7h16M10 11v6m4-6v6M6 7l1 14h10l1-14M9 7V4h6v3"/>',plus:'<path d="M12 5v14M5 12h14"/>',backup:'<path d="M12 3v12m-5-5 5 5 5-5"/><path d="M4 17v4h16v-4"/>',check:'<path d="m5 12 4 4L19 6"/>'};return '<svg viewBox="0 0 24 24" aria-hidden="true">'+(p[name]||p.box)+'</svg>'}
 function itemBtn(it,i){return '<div class="item"><button style="flex:1;display:flex;align-items:center;gap:10px;min-width:0;text-align:left;background:none;border:0;color:inherit;padding:0" data-a="reg" data-i="'+i+'"><span class="itemname">'+esc(it.n)+'<small>'+(it.c?'Código '+esc(it.c):'Sem código')+'</small></span><span class="tag">'+UL[it.u]+'</span></button><span class="item-actions"><button class="iconbtn" data-a="editItem" data-i="'+i+'" aria-label="Editar item" title="Editar">'+ico('edit')+'</button><button class="iconbtn" data-a="delItem" data-i="'+i+'" aria-label="Excluir item" title="Excluir">'+ico('trash')+'</button></span></div>'}
-function itemsHtml(k){const L=S.items[k];if(k!=='pele')return '<div class="itemlist-head"><h2>Meus itens</h2><button class="iconbtn" data-a="new" aria-label="Adicionar item">'+ico('plus')+'</button></div>'+(L.length?L.map(itemBtn).join(''):'<div class="empty">Nenhum item cadastrado.</div>');
-return '<div class="itemlist-head"><h2>Meus itens</h2><button class="iconbtn" data-a="new" aria-label="Adicionar item">'+ico('plus')+'</button></div>'+GR.map(g=>{const r=L.map((it,i)=>[it,i]).filter(p=>p[0].g===g);return r.length?'<h2>'+g+'</h2>'+r.map(p=>itemBtn(p[0],p[1])).join(''):''}).join('')}
+function alphaItems(list){return list.map((it,i)=>({it,i})).sort((a,b)=>a.it.n.localeCompare(b.it.n,'pt-BR',{sensitivity:'base'}))}
+function itemsHtml(k){const L=S.items[k],head='<div class="itemlist-head"><h2>Meus itens</h2><button class="iconbtn" data-a="new" aria-label="Adicionar item">'+ico('plus')+'</button></div>';
+if(k!=='pele'){const sorted=alphaItems(L);return head+(sorted.length?sorted.map(x=>itemBtn(x.it,x.i)).join(''):'<div class="empty">Nenhum item cadastrado.</div>')}
+return head+GR.map(g=>{const r=alphaItems(L.filter(it=>it.g===g));return r.length?'<h2>'+g+'</h2>'+r.map(x=>itemBtn(x.it,L.indexOf(x.it))).join(''):''}).join('')}
 function pes(k,e){const L=S.entries[k].filter(x=>x.item===e.item);return[L.indexOf(e)+1,L.length]}
 /* views */
-function render(){$('#app').innerHTML=view==='home'?home():secView()}
-function home(){
-return '<div style="display:flex;align-items:center;justify-content:space-between;margin:4px 0 22px"><div><div style="font-size:10px;letter-spacing:.15em;color:var(--mut);font-weight:700;text-transform:uppercase">Painel de controle</div><h1 style="margin:5px 0 0">Relatório de descarte</h1></div><span style="width:38px;height:38px;border:1px solid var(--bd);border-radius:12px;display:grid;place-items:center;color:var(--ac)">'+ico('layers')+'</span></div>'+
-'<h2>Setores</h2>'+Object.keys(SECS).map(k=>{const n=S.entries[k].length;return '<button class="big" data-a="open" data-k="'+k+'"><b>'+esc(SECS[k].nome)+'</b><span>'+esc(SECS[k].sub)+' · '+n+' registro'+(n===1?'':'s')+'</span></button>'}).join('')+
-'<h2>Dados e segurança</h2><div class="row"><button class="btn sec" data-a="bk">'+ico('backup')+' Backup</button><button class="btn sec" data-a="rs">'+ico('check')+' Restaurar</button></div>'+
-'<div class="bar"><div><button class="navbtn" data-a="open" data-k="folhagem">'+ico('leaf')+'<span>Folhagem</span></button><button class="navbtn" data-a="open" data-k="pele">'+ico('layers')+'<span>Pele</span></button><button class="navbtn home" data-a="home">'+ico('home')+'<span>Início</span></button><button class="navbtn" data-a="open" data-k="flv">'+ico('box')+'<span>FLV</span></button><button class="navbtn" data-a="bk">'+ico('backup')+'<span>Backup</span></button></div></div>'
-}
+function render(){$('#app').innerHTML=view==='home'?home():view==='tasks'?tasksView():view==='settings'?settingsView():secView()}
+function nav(){return '<div class="bar"><div><button class="navbtn" data-a="open" data-k="folhagem">'+ico('leaf')+'<span>Folhagem</span></button><button class="navbtn" data-a="open" data-k="pele">'+ico('layers')+'<span>Pele e osso</span></button><button class="navbtn home" data-a="home">'+ico('home')+'<span>Início</span></button><button class="navbtn" data-a="open" data-k="flv">'+ico('box')+'<span>FLV</span></button><button class="navbtn '+(view==='tasks'?'active':'')+'" data-a="tasks">'+ico('tasks')+'<span>Tarefas</span></button></div></div>'}
+function home(){return '<div class="homehead"><div><div class="eyebrow">PAINEL DE CONTROLE</div><h1>Relatório de descarte</h1></div><button class="iconbtn settingsbtn" data-a="settings" aria-label="Configurações">'+ico('settings')+'</button></div><div class="home-summary"><span>Rotina operacional</span><strong>'+S.tasks.filter(t=>!t.done).length+' tarefas pendentes</strong></div><h2>Setores</h2>'+Object.keys(SECS).map(k=>{const n=S.entries[k].length;return '<button class="big" data-a="open" data-k="'+k+'"><b>'+esc(SECS[k].nome)+'</b><span>'+esc(SECS[k].sub)+' · '+n+' lançamento'+(n===1?'':'s')+'</span></button>'}).join('')+'<h2>Atalhos</h2><button class="quicktask" data-a="tasks">'+ico('tasks')+'<span><b>Lista de tarefas</b><small>Acompanhe pré-devoluções e descartes</small></span><strong>'+S.tasks.filter(t=>!t.done).length+'</strong></button>'+nav()}
+function tasksView(){const pending=S.tasks.filter(t=>!t.done),done=S.tasks.filter(t=>t.done);const row=t=>'<div class="taskrow '+(t.done?'isdone':'')+'"><button class="taskcheck" data-a="taskToggle" data-id="'+t.id+'" aria-label="Alternar conclusão">'+(t.done?ico('check'):'')+'</button><div class="taskcopy"><b>'+esc(t.title)+'</b><small>'+esc(t.item)+' · '+esc(t.sector)+' · '+esc(t.date)+'</small></div><button class="iconbtn taskdel" data-a="taskDelete" data-id="'+t.id+'" aria-label="Excluir tarefa">'+ico('trash')+'</button></div>';return '<div class="eyebrow">ORGANIZAÇÃO</div><h1>Lista de tarefas</h1><p class="subtle">Criadas automaticamente a cada lançamento.</p><div class="taskcount"><div><small>Pendentes</small><strong>'+pending.length+'</strong></div><div><small>Concluídas</small><strong>'+done.length+'</strong></div></div><h2>A fazer</h2>'+(pending.length?pending.map(row).join(''):'<div class="empty">Tudo em dia. Nenhuma tarefa pendente.</div>')+(done.length?'<h2>Concluídas</h2>'+done.map(row).join(''):'')+nav()}
+function settingsView(){return '<button class="back" data-a="home">‹ Início</button><div class="eyebrow">PREFERÊNCIAS</div><h1>Dados e segurança</h1><p class="subtle">Faça uma cópia dos dados ou restaure um backup anterior.</p><div class="settingrow"><span>'+ico('backup')+'<span><b>Exportar backup</b><small>Itens, lançamentos, fotos e tarefas.</small></span></span><button class="btn sec" data-a="bk">Exportar</button></div><div class="settingrow"><span>'+ico('check')+'<span><b>Restaurar backup</b><small>Importar arquivo JSON.</small></span></span><button class="btn sec" data-a="rs">Restaurar</button></div>'+nav()}
 function secView(){
-const k=view,E=S.entries[k],T=totals(k);
+const k=view,E=S.entries[k],T=totals(k).sort((a,b)=>k==='pele'?(GR.indexOf(a.g)-GR.indexOf(b.g)||a.n.localeCompare(b.n,'pt-BR')):a.n.localeCompare(b.n,'pt-BR'));
 return '<button class="back" data-a="home">‹ Voltar</button><h1>'+SECS[k].nome+'</h1>'+
 itemsHtml(k)+
 
 '<h2>Registros</h2>'+(E.length?E.map(e=>'<div class="ent">'+(e.photo?'<img src="'+e.photo+'" alt="">':'<div class="ph"></div>')+'<div class="nm">'+esc(e.item)+(pes(k,e)[1]>1?'<small style="display:block;color:var(--mut);font-weight:400">Pesagem '+pes(k,e)[0]+' de '+pes(k,e)[1]+'</small>':'')+'</div><input inputmode="decimal" value="'+fmt(e.qty)+'" data-a="q" data-id="'+e.id+'"><button class="x" data-a="del" data-id="'+e.id+'" aria-label="Remover">×</button></div>').join(''):'<p style="color:var(--mut)">Nenhum registro ainda.</p>')+
 (T.length?'<h2>Resumo</h2><div class="sum">'+T.map(t=>'<div><span>'+esc(t.n)+(t.c?' <small style="color:var(--mut)">#'+esc(t.c)+'</small>':'')+(t.p.length>1?' <small style="color:var(--mut)">('+t.p.map(fmt).join(' + ')+')</small>':'')+'</span><b>'+fmt(t.q)+' '+t.u+'</b></div>').join('')+'</div>':'')+
 (E.length?'<div style="margin-top:16px"><button class="btn dg" data-a="clr">'+(armed?'Toque de novo para apagar tudo':'Novo relatório (limpar)')+'</button></div>':'')+
-'<div class="bar"><div><button class="navbtn" data-a="open" data-k="folhagem">'+ico('leaf')+'<span>Folhagem</span></button><button class="navbtn" data-a="open" data-k="pele">'+ico('layers')+'<span>Pele</span></button><button class="navbtn home" data-a="home">'+ico('home')+'<span>Início</span></button><button class="navbtn" data-a="open" data-k="flv">'+ico('box')+'<span>FLV</span></button><button class="navbtn" data-a="pdf">'+ico('backup')+'<span>PDF</span></button></div></div>'}
+nav()}
 function openSheet(h){$('#sin').innerHTML=h;$('#sheet').classList.add('on')}
 function closeSheet(){$('#sheet').classList.remove('on');sheet=null;photo=null}
 function regSheet(i){const it=S.items[view][i];sheet={i};photo=null;const ex=S.entries[view].filter(e=>e.item===it.n),tot=ex.reduce((s,e)=>s+e.qty,0);
 openSheet('<h1 style="margin:0">'+esc(it.n)+'</h1>'+(ex.length?'<p style="color:var(--mut);margin:4px 0 0">'+ex.length+' pesagem'+(ex.length>1?'ns':'')+' registrada'+(ex.length>1?'s':'')+' | total '+fmt(tot)+' '+UL[it.u]+'</p>':'')+'<label>Código do produto</label><input id="cod" value="'+esc(it.c)+'" placeholder="Digite o código"><label>Foto</label><button class="btn sec" data-a="ph">Tirar / escolher foto</button><img id="prev" alt=""><label>Quantidade ('+UL[it.u]+')</label><input id="qty" inputmode="decimal" placeholder="0"><button class="btn" data-a="more" style="margin-top:16px">Salvar e adicionar outra pesagem</button><div class="row" style="margin-top:8px"><button class="btn sec" data-a="cl">Cancelar</button><button class="btn sec" data-a="add">Salvar e fechar</button></div>')}
 function newSheet(){sheet={n:1};openSheet('<h1 style="margin:0">Novo item</h1><label>Nome</label><input id="nn">'+(view==='pele'?'<select id="nu" style="display:none">':'<label>Unidade</label><select id="nu">')+'<option value="un">Unidade (un)</option><option value="kg">Peso (kg)</option><option value="cx">Caixa (cx)</option></select>'+(view==='pele'?'<label>Grupo</label><select id="ng"><option value="Traseiro">Traseiro</option><option value="Dianteiro">Dianteiro</option><option value="Caixaria">Caixaria</option></select>':'')+'<label>Código do produto</label><input id="cod" placeholder="Digite o código"><div class="row" style="margin-top:16px"><button class="btn sec" data-a="cl">Cancelar</button><button class="btn" data-a="sn">Salvar item</button></div>')}
 function editItemSheet(i){const it=S.items[view][i];sheet={edit:i};openSheet('<h1 style="margin:0">Editar item</h1><label>Nome do item</label><input id="nn" value="'+esc(it.n)+'"><label>Unidade</label><select id="nu"><option value="un" '+(it.u==='un'?'selected':'')+'>Unidade (un)</option><option value="kg" '+(it.u==='kg'?'selected':'')+'>Peso (kg)</option><option value="cx" '+(it.u==='cx'?'selected':'')+'>Caixa (cx)</option></select>'+(view==='pele'?'<label>Grupo</label><select id="ng">'+GR.map(g=>'<option '+(it.g===g?'selected':'')+'>'+g+'</option>').join('')+'</select>':'')+'<label>Código do produto</label><input id="cod" value="'+esc(it.c||'')+'"><div class="row" style="margin-top:16px"><button class="btn sec" data-a="cl">Cancelar</button><button class="btn" data-a="saveEdit">Salvar alterações</button></div>')}
+function addTask(k,it,q){const d=new Date();S.tasks=S.tasks||[];S.tasks.unshift({id:String(Date.now())+'-'+Math.random().toString(36).slice(2,7),title:k==='folhagem'?'Fazer pré-devolução':'Fazer descarte por perda',item:it.n+' · '+fmt(q)+' '+UL[it.u],sector:SECS[k].nome,date:d.toLocaleDateString('pt-BR'),done:false,created:Date.now()})}
 /* actions */
 document.addEventListener('click',async ev=>{
 const b=ev.target.closest('[data-a]');if(!b){if(ev.target.id==='sheet')closeSheet();return}
 const a=b.dataset.a,k=view;
 if(a==='open'){view=b.dataset.k;armed=false;render();scrollTo(0,0)}
+else if(a==='tasks'){view='tasks';render();scrollTo(0,0)}
+else if(a==='settings'){view='settings';render();scrollTo(0,0)}
+else if(a==='taskToggle'){const t=S.tasks.find(x=>String(x.id)===b.dataset.id);if(t){t.done=!t.done;save();render()}}
+else if(a==='taskDelete'){S.tasks=S.tasks.filter(x=>String(x.id)!==b.dataset.id);save();render()}
 else if(a==='home'){view='home';render()}
 else if(a==='reg')regSheet(+b.dataset.i);
 else if(a==='new')newSheet();
@@ -178,7 +205,7 @@ else if(a==='saveEdit'){const i=sheet.edit,it=S.items[k][i],old=it.n,n=$('#nn').
 else if(a==='cl')closeSheet();
 else if(a==='ph')$('#pf').click();
 else if(a==='add'||a==='more'){const it=S.items[k][sheet.i],q=num($('#qty').value);if(q<=0){toast('Informe a quantidade');return}
-it.c=$('#cod').value.trim();S.entries[k].push({id:Date.now()+Math.random(),item:it.n,qty:q,photo});save();if(a==='more'){const i=sheet.i;render();regSheet(i);toast('Pesagem salva. Registre a próxima.')}else{closeSheet();render();toast('Registro adicionado')}}
+it.c=$('#cod').value.trim();S.entries[k].push({id:Date.now()+Math.random(),item:it.n,qty:q,photo});addTask(k,it,q);save();if(a==='more'){const i=sheet.i;render();regSheet(i);toast('Pesagem salva. Registre a próxima.')}else{closeSheet();render();toast('Registro adicionado')}}
 else if(a==='sn'){const n=$('#nn').value.trim();if(!n){toast('Informe o nome');return}
 S.items[k].push(k==='pele'?{n,u:'kg',c:$('#cod').value.trim(),g:$('#ng').value}:{n,u:$('#nu').value,c:$('#cod').value.trim()});save();closeSheet();render()}
 else if(a==='del'){S.entries[k]=S.entries[k].filter(e=>String(e.id)!==b.dataset.id);save();render()}
@@ -190,7 +217,7 @@ else if(a==='rs')$('#rf').click();
 });
 document.addEventListener('change',e=>{const t=e.target;if(t.dataset&&t.dataset.a==='q'){const en=S.entries[view].find(x=>String(x.id)===t.dataset.id);const q=num(t.value);if(en&&q>0){en.qty=q;save()}render()}});
 $('#pf').addEventListener('change',async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;photo=await compress(f);const p=$('#prev');if(p&&photo){p.src=photo;p.style.display='block'}});
-$('#rf').addEventListener('change',e=>{const f=e.target.files[0];e.target.value='';if(!f)return;const r=new FileReader();r.onload=()=>{try{const v=JSON.parse(r.result);if(!v.items||!v.entries)throw 0;S=v;migrate();save();view='home';render();toast('Backup restaurado')}catch(x){toast('Arquivo de backup inválido')}};r.readAsText(f)});
+$('#rf').addEventListener('change',e=>{const f=e.target.files[0];e.target.value='';if(!f)return;const r=new FileReader();r.onload=()=>{try{const v=JSON.parse(r.result);if(!v.items||!v.entries)throw 0;S=v;S.tasks=Array.isArray(S.tasks)?S.tasks:[];migrate();save();view='home';render();toast('Backup restaurado')}catch(x){toast('Arquivo de backup inválido')}};r.readAsText(f)});
 async function dl(name,data){const blob=data instanceof Blob?data:new Blob([data],{type:'application/json'});
 try{const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),8000);return true}catch(e){toast('Não foi possível salvar');return false}}
 async function backup(){await dl('backup-descarte '+dt()+'.json',JSON.stringify(S))}
@@ -202,7 +229,7 @@ const title=k==='folhagem'?'Relação de Folhagem Fornecedor 1651: Wictor REF. '
 const GN=[24,66,48],AC=[29,107,71],TX=[28,32,30],MU=[118,122,118],LN=[225,228,224],SF=[244,246,244];
 const li=s=>new Promise(r=>{if(!s)return r(null);const i=new Image();i.onload=()=>r(i);i.onerror=()=>r(null);i.src=s});
 const IM=new Map();await Promise.all(E.map(async e=>IM.set(e.id,await li(e.photo))));
-const T=totals(k).sort((a,b)=>{const ga=k==='pele'?GR.indexOf(a.g):0,gb=k==='pele'?GR.indexOf(b.g):0;return ga-gb||S.items[k].findIndex(i=>i.n===a.n)-S.items[k].findIndex(i=>i.n===b.n)});
+const T=totals(k).sort((a,b)=>{const ga=k==='pele'?GR.indexOf(a.g):0,gb=k==='pele'?GR.indexOf(b.g):0;return ga-gb||a.n.localeCompare(b.n,'pt-BR')});
 const fol=k==='folhagem',PW=210,M=14,CW=182;
 const strip=()=>{doc.setFillColor(...GN);doc.rect(0,0,PW,2.5,'F')};
 doc.setFillColor(...GN);doc.rect(0,0,PW,40,'F');

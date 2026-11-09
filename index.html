@@ -84,17 +84,20 @@ input,select{background:var(--in);border:1px solid var(--bd)}
 .sum .trow{padding:0;border-bottom:1px solid var(--bd)}.sum .trow:last-child{border-bottom:0}
 .trow .tk{flex:1;width:auto;border-bottom:0;padding:11px 2px}
 .x.ed{color:var(--mut);font-size:18px}
+#fab{position:fixed;right:16px;bottom:calc(98px + env(safe-area-inset-bottom,0px));width:56px;height:56px;border-radius:50%;border:0;background:linear-gradient(145deg,var(--ac2),var(--ac));color:var(--act);font-size:32px;line-height:1;display:grid;place-items:center;box-shadow:0 10px 24px rgba(15,157,104,.45);z-index:4;padding:0}
+input[type=search]{-webkit-appearance:none;appearance:none}
 </style>
 </head>
 <body>
 <div id="app"></div>
 <nav id="isl" aria-label="Menu">
 <button data-a="nav" data-n="tarefas"><svg viewBox="0 0 24 24"><path d="M9 11l3 3 8-8M20 12v7a2 2 0 01-2 2H6a2 2 0 01-2-2V7a2 2 0 012-2h9"/></svg><span>Tarefas</span></button>
-<button data-a="nav" data-n="regs"><svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 012-2h2a2 2 0 012 2M9 5h6M9 12h6M9 16h4"/></svg><span>Registros</span></button>
+<button data-a="nav" data-n="busca"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><span>Buscar</span></button>
 <button class="mid on" data-a="nav" data-n="home"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10"/></svg><span>Início</span></button>
 <button data-a="nav" data-n="itens"><svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg><span>Itens</span></button>
 <button data-a="nav" data-n="pdf"><svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8zM14 3v5h5M9 13h6M9 17h4"/></svg><span>PDF</span></button>
 </nav>
+<button id="fab" data-a="fab" aria-label="Adicionar">+</button>
 <div id="sheet"><div class="in" id="sin"></div></div>
 <div id="toast"></div>
 <input type="file" id="pf" accept="image/*" capture="environment" hidden>
@@ -132,7 +135,11 @@ const num=v=>{const n=parseFloat(String(v).replace(',','.'));return isNaN(n)?0:n
 const fmt=n=>String(Math.round(n*1000)/1000).replace('.',',');
 const fmtU=(q,u)=>u==='kg'?q.toFixed(3).replace('.',','):fmt(q);
 const uOf=(k,n)=>(S.items[k].find(i=>i.n===n)||{u:'un'}).u;
-function totals(k){const m={},p={};S.entries[k].forEach(e=>{m[e.item]=(m[e.item]||0)+e.qty;(p[e.item]=p[e.item]||[]).push(e.qty)});return Object.keys(m).map(n=>{const it=S.items[k].find(x=>x.n===n)||{u:'un',c:''};return{n,q:m[n],u:it.u,c:it.c,g:it.g,p:p[n]}})}
+const NC=(a,b)=>String(a).localeCompare(String(b),'pt-BR',{sensitivity:'base'});
+const norm=s=>String(s).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+const sorted=L=>L.map((it,i)=>[it,i]).sort((a,b)=>NC(a[0].n,b[0].n));
+const isSec=()=>view==='folhagem'||view==='pele'||view==='flv';
+function totals(k){const m={},p={};S.entries[k].forEach(e=>{m[e.item]=(m[e.item]||0)+e.qty;(p[e.item]=p[e.item]||[]).push(e.qty)});return Object.keys(m).map(n=>{const it=S.items[k].find(x=>x.n===n)||{u:'un',c:''};return{n,q:m[n],u:it.u,c:it.c,g:it.g,p:p[n]}}).sort((a,b)=>NC(a.n,b.n))}
 async function compress(file){let bmp=null;try{bmp=await createImageBitmap(file)}catch(e){}
 if(!bmp){const u=URL.createObjectURL(file);bmp=await new Promise(r=>{const i=new Image();i.onload=()=>r(i);i.onerror=()=>r(null);i.src=u});setTimeout(()=>URL.revokeObjectURL(u),4000)}
 if(!bmp)return null;const W=bmp.width,H=bmp.height,draw=(m,qq)=>{const k=Math.min(1,m/Math.max(W,H)),c=document.createElement('canvas');c.width=Math.round(W*k);c.height=Math.round(H*k);c.getContext('2d').drawImage(bmp,0,0,c.width,c.height);return c.toDataURL('image/jpeg',qq)};
@@ -144,17 +151,17 @@ function migrate3(){Object.keys(S.items).forEach(k=>{const L=S.items[k],cnt={},r
 function migrate2(){const map={};
 S.items.pele=S.items.pele.map(it=>{const r=REN[it.n.toLowerCase()];if(r){map[it.n]=r[0];return{...it,n:r[0],u:'kg',g:r[1]}}return{...it,u:'kg',g:it.g||'Caixaria'}});
 S.entries.pele.forEach(e=>{if(map[e.item])e.item=map[e.item]});S.v=2}
-function itemBtn(it,i){return '<button class="item" data-a="reg" data-i="'+i+'"><span>'+esc(it.n)+'<small>'+(it.c?'Código '+esc(it.c):'sem código')+'</small></span><span class="tag">'+UL[it.u]+' ＋</span></button>'}
-function itemsHtml(k){const L=S.items[k];if(k!=='pele')return '<h2>Itens</h2>'+L.map(itemBtn).join('');
-return GR.map(g=>{const r=L.map((it,i)=>[it,i]).filter(p=>p[0].g===g);return r.length?'<h2>'+g+'</h2>'+r.map(p=>itemBtn(p[0],p[1])).join(''):''}).join('')}
+function itemBtn(it,i){return '<button class="item" data-a="reg" data-nm="'+esc(norm(it.n+' '+it.c))+'" data-i="'+i+'"><span>'+esc(it.n)+'<small>'+(it.c?'Código '+esc(it.c):'sem código')+'</small></span><span class="tag">'+UL[it.u]+' ＋</span></button>'}
+function itemsHtml(k){const L=sorted(S.items[k]);if(k!=='pele')return '<h2>Itens</h2>'+L.map(p=>itemBtn(p[0],p[1])).join('');
+return GR.map(g=>{const r=L.filter(p=>p[0].g===g);return r.length?'<h2>'+g+'</h2>'+r.map(p=>itemBtn(p[0],p[1])).join(''):''}).join('')}
 function pes(k,e){const L=S.entries[k].filter(x=>x.item===e.item);return[L.indexOf(e)+1,L.length]}
 const TASK={folhagem:'Lançar folhagem',pele:'Lançar pele e osso',flv:'Lançar FLV'};
 const isDone=k=>!!(S.done&&S.done[k]===dt());
 function tasksHtml(){return '<h2>Tarefas de hoje</h2><div class="sum">'+Object.keys(SECS).map(k=>{const dn=isDone(k),n=S.entries[k].length;return '<button class="tk'+(dn?' dn':'')+'" data-a="tk" data-k="'+k+'"><span class="ck">✓</span><span class="tn">'+TASK[k]+'</span><small>'+(dn?'Concluída':(n?n+' registro'+(n===1?'':'s')+' em andamento':'Pendente'))+'</small></button>'}).join('')+'</div>'}
-function mgrView(){const k=view;return '<button class="back" data-a="done">‹ Concluir</button><h1>'+SECS[k].nome+'</h1><p style="color:var(--mut);margin:-6px 0 8px">Toque em um item para editar ou excluir.</p>'+(k==='pele'?GR:[null]).map(g=>{const r=S.items[k].map((it,i)=>[it,i]).filter(p=>g===null||p[0].g===g);return (g?'<h2>'+g+'</h2>':'')+r.map(p=>'<button class="item" data-a="edit" data-i="'+p[1]+'"><span>'+esc(p[0].n)+'<small>'+(p[0].c?'Código '+esc(p[0].c):'sem código')+' | '+UL[p[0].u]+'</small></span><span class="tag">Editar</span></button>').join('')}).join('')+'<button class="btn" data-a="new" style="margin-top:8px">+ Novo item</button>'}
+function mgrView(){const k=view;return '<button class="back" data-a="done">‹ Concluir</button><h1>'+SECS[k].nome+'</h1><p style="color:var(--mut);margin:-6px 0 8px">Toque em um item para editar ou excluir.</p>'+(k==='pele'?GR:[null]).map(g=>{const r=sorted(S.items[k]).filter(p=>g===null||p[0].g===g);return (g?'<h2>'+g+'</h2>':'')+r.map(p=>'<button class="item" data-a="edit" data-i="'+p[1]+'"><span>'+esc(p[0].n)+'<small>'+(p[0].c?'Código '+esc(p[0].c):'sem código')+' | '+UL[p[0].u]+'</small></span><span class="tag">Editar</span></button>').join('')}).join('')+'<button class="btn" data-a="new" style="margin-top:8px">+ Novo item</button>'}
 function editSheet(i){const it=S.items[view][i];sheet={e:i};const UN={un:'Unidade (un)',kg:'Peso (kg)',cx:'Caixa (cx)'};
 openSheet('<h1 style="margin:0">Editar item</h1><label>Nome</label><input id="nn" value="'+esc(it.n)+'">'+(view==='pele'?'<label>Grupo</label><select id="ng">'+GR.map(g=>'<option'+(g===it.g?' selected':'')+'>'+g+'</option>').join('')+'</select>':'<label>Unidade</label><select id="nu">'+['un','kg','cx'].map(u=>'<option value="'+u+'"'+(u===it.u?' selected':'')+'>'+UN[u]+'</option>').join('')+'</select>')+'<label>Código do produto</label><input id="cod" value="'+esc(it.c)+'"><button class="btn" data-a="se" style="margin-top:16px">Salvar alterações</button><div class="row" style="margin-top:8px"><button class="btn sec" data-a="cl">Cancelar</button><button class="btn dg" data-a="de">Excluir item</button></div>')}
-function need(cb){if(view!=='home'&&view!=='tarefas')return cb(view);pend=cb;openSheet('<h1 style="margin:0 0 12px">Escolha a seção</h1>'+Object.keys(SECS).map(k=>'<button class="big" data-a="ps" data-k="'+k+'"><b>'+SECS[k].nome+'</b><span>'+SECS[k].sub+'</span></button>').join('')+'<button class="btn sec" data-a="cl">Cancelar</button>')}
+function need(cb){if(isSec())return cb(view);pend=cb;openSheet('<h1 style="margin:0 0 12px">Escolha a seção</h1>'+Object.keys(SECS).map(k=>'<button class="big" data-a="ps" data-k="'+k+'"><b>'+SECS[k].nome+'</b><span>'+SECS[k].sub+'</span></button>').join('')+'<button class="btn sec" data-a="cl">Cancelar</button>')}
 function bkSheet(){openSheet('<h1 style="margin:0">Backup</h1><p style="color:var(--mut)">Guarda itens, códigos e registros em um arquivo, ou restaura um backup salvo.</p><button class="btn" data-a="bk">Criar backup</button><button class="btn sec" data-a="rs" style="margin-top:8px">Restaurar backup</button><button class="btn sec" data-a="cl" style="margin-top:8px">Fechar</button>')}
 function myTasksBtn(){const n=(S.tasks||[]).filter(t=>!t.done).length;return '<button class="btn sec" data-a="nav" data-n="tarefas" style="margin-top:10px">Minhas tarefas'+(n?' · '+n+' pendente'+(n>1?'s':''):'')+' ›</button>'}
 function tarefasView(){const L=S.tasks||[],pd=L.filter(t=>!t.done),dn=L.filter(t=>t.done);
@@ -167,18 +174,28 @@ function taskSheet(id){const t=S.tasks.find(x=>String(x.id)===String(id));if(!t)
 document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='ntk'){e.preventDefault();addTask()}});
 function themeNow(){let t='auto';try{t=localStorage.getItem('dsc-theme')||'auto'}catch(e){}return t}
 function themeBtns(){const c=themeNow();return '<div class="row">'+[['auto','Automático'],['light','Claro'],['dark','Escuro']].map(a=>'<button class="btn'+(c===a[0]?'':' sec')+'" data-a="th" data-m="'+a[0]+'">'+a[1]+'</button>').join('')+'</div>'}
+let qry='';
+function resHtml(){const t=norm(qry.trim());if(!t)return '<p style="color:var(--mut)">Digite o nome ou o código de um item. A busca vale para todas as seções.</p>';
+let out='';Object.keys(SECS).forEach(k=>{const r=sorted(S.items[k]).filter(p=>norm(p[0].n+' '+p[0].c).includes(t));if(r.length)out+='<h2>'+SECS[k].nome+'</h2>'+r.map(p=>'<button class="item" data-a="sr" data-k="'+k+'" data-i="'+p[1]+'"><span>'+esc(p[0].n)+'<small>'+(p[0].c?'Código '+esc(p[0].c):'sem código')+'</small></span><span class="tag">'+UL[p[0].u]+' ＋</span></button>').join('')});
+return out||'<p style="color:var(--mut)">Nenhum item encontrado.</p>'}
+function buscaView(){return '<h1>Buscar</h1><input id="q" type="search" placeholder="Item ou código..." autocomplete="off" value="'+esc(qry)+'"><div id="res">'+resHtml()+'</div>'}
+function qlHtml(k,t){t=norm(t);const r=sorted(S.items[k]).filter(p=>!t||norm(p[0].n+' '+p[0].c).includes(t));return r.length?r.map(p=>'<button class="item" data-a="qr" data-i="'+p[1]+'"><span>'+esc(p[0].n)+'<small>'+(p[0].c?'Código '+esc(p[0].c):'sem código')+'</small></span><span class="tag">'+UL[p[0].u]+'</span></button>').join(''):'<p style="color:var(--mut)">Nenhum item. Use "+ Novo item".</p>'}
+function quickSheet(k){openSheet('<h1 style="margin:0 0 10px">Registrar em '+SECS[k].nome+'</h1><input id="qs" type="search" placeholder="Pesquisar item..." autocomplete="off"><div id="ql" style="margin-top:10px;max-height:50vh;overflow:auto">'+qlHtml(k,'')+'</div><button class="btn sec" data-a="new" style="margin-top:10px">+ Novo item</button><button class="back" data-a="cl" style="display:block;margin:8px auto 0">Fechar</button>');setTimeout(()=>{const i=$('#qs');i&&i.focus()},80)}
+function filt(t){t=norm(t);document.querySelectorAll('#app .item[data-nm]').forEach(b=>{b.style.display=(!t||b.dataset.nm.includes(t))?'':'none'});
+document.querySelectorAll('#app h2').forEach(h=>{const n=h.nextElementSibling;if(!n||!n.classList.contains('item'))return;let x=n,any=false;while(x&&x.classList.contains('item')){if(x.style.display!=='none')any=true;x=x.nextElementSibling}h.style.display=any?'':'none'})}
+document.addEventListener('input',e=>{const t=e.target;if(t.id==='q'){qry=t.value;const r=$('#res');if(r)r.innerHTML=resHtml()}else if(t.id==='fq')filt(t.value);else if(t.id==='qs'){const l=$('#ql');if(l)l.innerHTML=qlHtml(view,t.value)}});
 /* views */
-function render(){$('#app').innerHTML=view==='home'?home():view==='tarefas'?tarefasView():secView();document.querySelectorAll('#isl button').forEach(x=>x.classList.toggle('on',(x.dataset.n==='home'&&view==='home')||(x.dataset.n==='itens'&&mgr&&view!=='home')||(x.dataset.n==='tarefas'&&view==='tarefas')))}
+function render(){$('#app').innerHTML=view==='home'?home():view==='tarefas'?tarefasView():view==='busca'?buscaView():secView();document.querySelectorAll('#isl button').forEach(x=>x.classList.toggle('on',(x.dataset.n==='home'&&view==='home')||(x.dataset.n==='itens'&&mgr&&view!=='home')||(x.dataset.n==='tarefas'&&view==='tarefas')||(x.dataset.n==='busca'&&view==='busca')))}
 function home(){
 return '<h1>Relatório de Descarte</h1>'+(dip?'<button class="btn" data-a="inst" style="margin-bottom:12px">Instalar app</button>':'')+tasksHtml()+myTasksBtn()+'<h2>Seções</h2>'+Object.keys(SECS).map(k=>{const n=S.entries[k].length;return '<button class="big" data-a="open" data-k="'+k+'"><b>'+SECS[k].nome+'</b><span>'+SECS[k].sub+' · '+n+' registro'+(n===1?'':'s')+(isDone(k)?' · ✓ lançado hoje':'')+'</span></button>'}).join('')+
 '<h2>Aparência</h2>'+themeBtns()+'<h2>Backup</h2><div class="row"><button class="btn sec" data-a="bk">Criar backup</button><button class="btn sec" data-a="rs">Restaurar backup</button></div>'+'<h2>Instalar no celular</h2><div class="sum"><div><span>Android (Chrome)</span><span style="text-align:right">Menu ⋮ › Instalar app</span></div><div><span>iPhone (Safari)</span><span style="text-align:right">Compartilhar › Adicionar à Tela de Início</span></div></div>'}
 function secView(){return mgr?mgrView():secView0()}
 function secView0(){
 const k=view,E=S.entries[k],T=totals(k);
-return '<button class="back" data-a="home">‹ Voltar</button><h1>'+SECS[k].nome+'</h1>'+
+return '<button class="back" data-a="home">‹ Voltar</button><h1>'+SECS[k].nome+'</h1>'+'<div class="row" style="margin-bottom:6px"><input id="fq" type="search" placeholder="Pesquisar nesta seção..." autocomplete="off"><button class="btn sec" data-a="gor" style="flex:none;width:auto;padding:11px 14px">Registros ('+E.length+')</button></div>'+
 itemsHtml(k)+
 '<button class="btn sec" data-a="new">+ Novo item</button>'+
-'<h2 id="regs">Registros</h2>'+(E.length?'<p style="color:var(--mut);font-size:13px;margin:-2px 0 8px">Toque na foto para trocar.</p>':'')+(E.length?E.map(e=>'<div class="ent">'+(e.thumb?'<img data-a="rph" data-id="'+e.id+'" src="'+e.thumb+'" alt="" decoding="async">':'<div class="ph" data-a="rph" data-id="'+e.id+'"></div>')+'<div class="nm">'+esc(e.item)+(pes(k,e)[1]>1?'<small style="display:block;color:var(--mut);font-weight:400">Pesagem '+pes(k,e)[0]+' de '+pes(k,e)[1]+'</small>':'')+'</div><input class="nin" inputmode="decimal" value="'+fmtU(e.qty,uOf(k,e.item))+'" data-a="q" data-id="'+e.id+'"><button class="x" data-a="del" data-id="'+e.id+'" aria-label="Remover">×</button></div>').join(''):'<p style="color:var(--mut)">Nenhum registro ainda.</p>')+
+'<h2 id="regs">Registros</h2>'+(E.length?'<p style="color:var(--mut);font-size:13px;margin:-2px 0 8px">Toque na foto para trocar.</p>':'')+(E.length?E.slice().sort((a,b)=>NC(a.item,b.item)).map(e=>'<div class="ent">'+(e.thumb?'<img data-a="rph" data-id="'+e.id+'" src="'+e.thumb+'" alt="" decoding="async">':'<div class="ph" data-a="rph" data-id="'+e.id+'"></div>')+'<div class="nm">'+esc(e.item)+(pes(k,e)[1]>1?'<small style="display:block;color:var(--mut);font-weight:400">Pesagem '+pes(k,e)[0]+' de '+pes(k,e)[1]+'</small>':'')+'</div><input class="nin" inputmode="decimal" value="'+fmtU(e.qty,uOf(k,e.item))+'" data-a="q" data-id="'+e.id+'"><button class="x" data-a="del" data-id="'+e.id+'" aria-label="Remover">×</button></div>').join(''):'<p style="color:var(--mut)">Nenhum registro ainda.</p>')+
 (T.length?'<h2>Resumo</h2><div class="sum">'+T.map(t=>'<div><span>'+esc(t.n)+(t.c?' <small style="color:var(--mut)">#'+esc(t.c)+'</small>':'')+(t.p.length>1?' <small style="color:var(--mut)">('+t.p.map(fmt).join(' + ')+')</small>':'')+'</span><b>'+fmtU(t.q,t.u)+' '+t.u+'</b></div>').join('')+'</div>':'')+
 (E.length?'<div style="margin-top:16px"><button class="btn dg" data-a="clr">'+(armed?'Toque de novo para apagar tudo':'Novo relatório (limpar)')+'</button></div>':'')}
 function openSheet(h){$('#sin').innerHTML=h;$('#sheet').classList.add('on')}
@@ -195,6 +212,10 @@ else if(a==='home'){view='home';mgr=false;render()}
 else if(a==='reg')regSheet(+b.dataset.i);
 else if(a==='th'){const m=b.dataset.m;try{if(m==='auto')localStorage.removeItem('dsc-theme');else localStorage.setItem('dsc-theme',m)}catch(x){}if(m==='auto')document.documentElement.removeAttribute('data-theme');else document.documentElement.setAttribute('data-theme',m);render()}
 else if(a==='tk'){S.done=S.done||{};if(isDone(b.dataset.k))delete S.done[b.dataset.k];else S.done[b.dataset.k]=dt();save();render()}
+else if(a==='fab'){if(view==='tarefas'){const i=$('#ntk');if(i){scrollTo(0,0);i.focus()}}else if(view==='busca'){const i=$('#q');i&&i.focus()}else if(isSec()){if(mgr)newSheet();else quickSheet(view)}else need(kk=>{view=kk;mgr=false;render();quickSheet(kk)})}
+else if(a==='qr'){closeSheet();regSheet(+b.dataset.i)}
+else if(a==='sr'){view=b.dataset.k;mgr=false;render();regSheet(+b.dataset.i)}
+else if(a==='gor'){const r=$('#regs');r&&r.scrollIntoView({behavior:'smooth'})}
 else if(a==='ta')addTask();
 else if(a==='tt'){const t=S.tasks.find(x=>String(x.id)===b.dataset.id);if(t){t.done=!t.done;save();render()}}
 else if(a==='td'){S.tasks=S.tasks.filter(x=>String(x.id)!==b.dataset.id);save();closeSheet();render()}
@@ -204,9 +225,10 @@ else if(a==='tclr'){S.tasks=S.tasks.filter(x=>!x.done);save();render()}
 else if(a==='nav'){const n=b.dataset.n;
 if(n==='home'){view='home';mgr=false;render();scrollTo(0,0)}
 else if(n==='tarefas'){view='tarefas';mgr=false;render();scrollTo(0,0)}
+else if(n==='busca'){view='busca';mgr=false;render();scrollTo(0,0);const i=$('#q');i&&i.focus()}
 else if(n==='bk')bkSheet();
 else if(n==='pdf')need(kk=>makePdf(kk));
-else if(n==='itens'){if(view!=='home'&&view!=='tarefas'){mgr=!mgr;render();scrollTo(0,0)}else need(kk=>{view=kk;mgr=true;render();scrollTo(0,0)})}
+else if(n==='itens'){if(isSec()){mgr=!mgr;render();scrollTo(0,0)}else need(kk=>{view=kk;mgr=true;render();scrollTo(0,0)})}
 else if(n==='regs')need(kk=>{view=kk;mgr=false;render();setTimeout(()=>{const r=$('#regs');r&&r.scrollIntoView({behavior:'smooth'})},60)})}
 else if(a==='ps'){const f=pend;closeSheet();f&&f(b.dataset.k)}
 else if(a==='done'){mgr=false;render();scrollTo(0,0)}
@@ -252,7 +274,7 @@ const title=k==='folhagem'?'Resumo de Folhagem Fornecedor 1651: Wictor REF. '+d:
 const GN=[10,58,44],AC=[15,157,104],TX=[28,32,30],MU=[118,122,118],LN=[225,228,224],SF=[244,246,244];
 const li=s=>new Promise(r=>{if(!s)return r(null);const i=new Image();i.onload=()=>r(i);i.onerror=()=>r(null);i.src=s});
 const IM=new Map(),PF=new Map();for(const e of E){const f=e.ph?await phGet(e.id):null;PF.set(e.id,f);IM.set(e.id,await li(f))}
-const T=totals(k).sort((a,b)=>{const ga=k==='pele'?GR.indexOf(a.g):0,gb=k==='pele'?GR.indexOf(b.g):0;return ga-gb||S.items[k].findIndex(i=>i.n===a.n)-S.items[k].findIndex(i=>i.n===b.n)});
+const T=totals(k).sort((a,b)=>{const ga=k==='pele'?GR.indexOf(a.g):0,gb=k==='pele'?GR.indexOf(b.g):0;return ga-gb||NC(a.n,b.n)});
 const fol=k==='folhagem',PW=210,M=14,CW=182,COLW=89,XS=[M,M+COLW+4],U=fmtU;
 const band=()=>{doc.setFillColor(...GN);doc.rect(0,0,PW,20,'F');doc.setFont('helvetica','bold');doc.setFontSize(9);doc.setTextColor(255,255,255);doc.text(fol?'RESUMO DE FOLHAGEM  |  FORNECEDOR 1651: WICTOR':'RELATÓRIO DE DESCARTE  |  '+SECS[k].nome.toUpperCase(),M,12.5);doc.setFontSize(11);doc.text('REF. '+d,PW-M,12.5,{align:'right'})};
 const fit=(im,w,mh)=>{if(!im)return[w,Math.min(mh,40)];const h=w*im.height/im.width;return h>mh?[mh*im.width/im.height,mh]:[w,h]};

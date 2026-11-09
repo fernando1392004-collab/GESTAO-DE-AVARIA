@@ -86,6 +86,8 @@ input,select{background:var(--in);border:1px solid var(--bd)}
 .x.ed{color:var(--mut);font-size:18px}
 #fab{position:fixed;right:16px;bottom:calc(98px + env(safe-area-inset-bottom,0px));width:56px;height:56px;border-radius:50%;border:0;background:linear-gradient(145deg,var(--ac2),var(--ac));color:var(--act);font-size:32px;line-height:1;display:grid;place-items:center;box-shadow:0 10px 24px rgba(15,157,104,.45);z-index:4;padding:0}
 input[type=search]{-webkit-appearance:none;appearance:none}
+.item.sel{border-color:var(--ac);background:var(--acs);box-shadow:inset 0 0 0 1px var(--ac)}
+.ent img[data-a],.ent .ph[data-a]{cursor:zoom-in}
 </style>
 </head>
 <body>
@@ -111,9 +113,9 @@ const I=(n,u,c='')=>({n,u,c}),G=(n,g,c='')=>({n,u:'kg',c,g});
 const DEF={folhagem:[I('Alface regional','un',''),I('Cebolinha','un',''),I('Jambu','un','12938'),I('Cheiro verde','un',''),I('Chicória','un','37497'),I('Kit folhagem','un',''),I('Salsa','un',''),I('Agrião','un',''),I('Macaxeira','kg',''),I('Alface Hidropônicos','un','679091'),I('Manjericão','un','2030'),I('Vinagreira','un','38410'),I('Alavanca','un','31005'),I('Alfavaca','un','31005'),I('Maxixe','kg','9865'),I('Quiabo (un)','un','9968'),I('Quiabo (kg)','kg','9968')],
 pele:[G('Osso Traseiro','Traseiro',''),G('Pele Traseira','Traseiro',''),G('Saco Traseiro','Traseiro',''),G('Osso Dianteiro','Dianteiro',''),G('Pele Dianteira','Dianteiro',''),G('Saco Dianteiro','Dianteiro',''),G('Cabeça de Lombo','Caixaria',''),G('Pele PA/Costela','Caixaria',''),G('Saco PA/Costela','Caixaria','')],
 flv:[I('Tomate','kg',''),I('Brócolis','kg',''),I('Pitaya','kg',''),I('Alface americano','kg',''),I('Berinjela','kg',''),I('Maçã nacional','kg',''),I('Tangerina importada','kg',''),I('Limão','kg',''),I('Repolho verde','kg',''),I('Coco','un',''),I('Abacaxi','un','')]};
-let S={v:4,items:JSON.parse(JSON.stringify(DEF)),entries:{folhagem:[],pele:[],flv:[]},done:{},tasks:[]};
+let S={v:4,items:JSON.parse(JSON.stringify(DEF)),entries:{folhagem:[],pele:[],flv:[]},done:{},tasks:[],forn:[]};
 let dip=null;addEventListener('beforeinstallprompt',e=>{e.preventDefault();dip=e;if(view==='home')render()});
-let view='home',mgr=false,pend=null,repl=null,sheet=null,photo=null,armed=false;
+let view='home',mgr=false,pend=null,repl=null,sheet=null,photo=null,armed=false,pfm=null,tsub='tarefas',fdl='';
 const $=s=>document.querySelector(s);
 const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const UL={kg:'kg',un:'un',cx:'cx'};
@@ -146,7 +148,7 @@ if(!bmp)return null;const W=bmp.width,H=bmp.height,draw=(m,qq)=>{const k=Math.mi
 const out={full:draw(900,.7),thumb:draw(180,.6)};if(bmp.close)bmp.close();return out}
 const GR=['Traseiro','Dianteiro','Caixaria'];
 const REN={'osso traseiro':['Osso Traseiro','Traseiro'],'pele traseira':['Pele Traseira','Traseiro'],'saco traseiro':['Saco Traseiro','Traseiro'],'osso diant':['Osso Dianteiro','Dianteiro'],'saco diant':['Saco Dianteiro','Dianteiro'],'pele diant':['Pele Dianteira','Dianteiro'],'cabeça de lombo (caixaria)':['Cabeça de Lombo','Caixaria'],'pele pa/costela':['Pele PA/Costela','Caixaria'],'saco pa/costela':['Saco PA/Costela','Caixaria']};
-function migrate(){if(!(S.v>=2))migrate2();if(!(S.v>=3))migrate3();if(!(S.v>=4)){S.tasks=S.tasks||[];S.v=4}}
+function migrate(){if(!(S.v>=2))migrate2();if(!(S.v>=3))migrate3();if(!(S.v>=4)){S.tasks=S.tasks||[];S.v=4}S.tasks=S.tasks||[];S.forn=S.forn||[]}
 function migrate3(){Object.keys(S.items).forEach(k=>{const L=S.items[k],cnt={},ren={};L.forEach(i=>cnt[i.n]=(cnt[i.n]||0)+1);L.forEach(i=>{if(cnt[i.n]>1){const nn=i.n+' ('+i.u+')';(ren[i.n]=ren[i.n]||[]).push([i,nn]);i.n=nn}});S.entries[k].forEach(e=>{const r=ren[e.item];if(r){e.item=(r.find(x=>x[0].u==='kg')||r[0])[1]}})});S.done=S.done||{};S.v=3}
 function migrate2(){const map={};
 S.items.pele=S.items.pele.map(it=>{const r=REN[it.n.toLowerCase()];if(r){map[it.n]=r[0];return{...it,n:r[0],u:'kg',g:r[1]}}return{...it,u:'kg',g:it.g||'Caixaria'}});
@@ -164,14 +166,15 @@ openSheet('<h1 style="margin:0">Editar item</h1><label>Nome</label><input id="nn
 function need(cb){if(isSec())return cb(view);pend=cb;openSheet('<h1 style="margin:0 0 12px">Escolha a seção</h1>'+Object.keys(SECS).map(k=>'<button class="big" data-a="ps" data-k="'+k+'"><b>'+SECS[k].nome+'</b><span>'+SECS[k].sub+'</span></button>').join('')+'<button class="btn sec" data-a="cl">Cancelar</button>')}
 function bkSheet(){openSheet('<h1 style="margin:0">Backup</h1><p style="color:var(--mut)">Guarda itens, códigos e registros em um arquivo, ou restaura um backup salvo.</p><button class="btn" data-a="bk">Criar backup</button><button class="btn sec" data-a="rs" style="margin-top:8px">Restaurar backup</button><button class="btn sec" data-a="cl" style="margin-top:8px">Fechar</button>')}
 function myTasksBtn(){const n=(S.tasks||[]).filter(t=>!t.done).length;return '<button class="btn sec" data-a="nav" data-n="tarefas" style="margin-top:10px">Minhas tarefas'+(n?' · '+n+' pendente'+(n>1?'s':''):'')+' ›</button>'}
-function tarefasView(){const L=S.tasks||[],pd=L.filter(t=>!t.done),dn=L.filter(t=>t.done);
+function tarefasView(){return '<h1>Tarefas</h1>'+tabsHtml()+(tsub==='forn'?fornView():tarefasBody())}
+function tarefasBody(){const L=S.tasks||[],pd=L.filter(t=>!t.done),dn=L.filter(t=>t.done);
 const row=t=>'<div class="trow"><button class="tk'+(t.done?' dn':'')+'" data-a="tt" data-id="'+t.id+'"><span class="ck">✓</span><span class="tn">'+esc(t.t)+'</span></button><button class="x ed" data-a="te" data-id="'+t.id+'" aria-label="Editar">✎</button><button class="x" data-a="td" data-id="'+t.id+'" aria-label="Excluir">×</button></div>';
-return '<h1>Tarefas</h1><div class="row"><input id="ntk" placeholder="Nova tarefa, ex.: conferir a balança" enterkeyhint="done" autocomplete="off"><button class="btn" data-a="ta" style="flex:none;width:56px;padding:12px" aria-label="Adicionar">+</button></div>'+
+return '<div class="row"><input id="ntk" placeholder="Nova tarefa, ex.: conferir a balança" enterkeyhint="done" autocomplete="off"><button class="btn" data-a="ta" style="flex:none;width:56px;padding:12px" aria-label="Adicionar">+</button></div>'+
 '<h2>A fazer</h2>'+(pd.length?'<div class="sum">'+pd.map(row).join('')+'</div>':'<p style="color:var(--mut)">Nada pendente. Adicione uma tarefa acima.</p>')+
 tasksHtml()+(dn.length?'<h2>Concluídas</h2><div class="sum">'+dn.map(row).join('')+'</div><button class="btn dg" data-a="tclr" style="margin-top:10px">Limpar concluídas</button>':'')}
 function addTask(){const i=$('#ntk'),t=(i&&i.value||'').trim();if(!t){toast('Digite a tarefa');return}S.tasks.push({id:Date.now()+Math.random(),t,done:false});save();render();const n=$('#ntk');n&&n.focus()}
 function taskSheet(id){const t=S.tasks.find(x=>String(x.id)===String(id));if(!t)return;sheet={t:id};openSheet('<h1 style="margin:0">Editar tarefa</h1><label>Tarefa</label><input id="etk" value="'+esc(t.t)+'"><button class="btn" data-a="tsv" style="margin-top:16px">Salvar</button><div class="row" style="margin-top:8px"><button class="btn sec" data-a="cl">Cancelar</button><button class="btn dg" data-a="td" data-id="'+t.id+'">Excluir</button></div>')}
-document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='ntk'){e.preventDefault();addTask()}});
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='ntk'){e.preventDefault();addTask()}else if(e.key==='Enter'&&e.target.id==='nfn'){e.preventDefault();addForn()}});
 function themeNow(){let t='auto';try{t=localStorage.getItem('dsc-theme')||'auto'}catch(e){}return t}
 function themeBtns(){const c=themeNow();return '<div class="row">'+[['auto','Automático'],['light','Claro'],['dark','Escuro']].map(a=>'<button class="btn'+(c===a[0]?'':' sec')+'" data-a="th" data-m="'+a[0]+'">'+a[1]+'</button>').join('')+'</div>'}
 let qry='';
@@ -183,7 +186,7 @@ function qlHtml(k,t){t=norm(t);const r=sorted(S.items[k]).filter(p=>!t||norm(p[0
 function quickSheet(k){openSheet('<h1 style="margin:0 0 10px">Registrar em '+SECS[k].nome+'</h1><input id="qs" type="search" placeholder="Pesquisar item..." autocomplete="off"><div id="ql" style="margin-top:10px;max-height:50vh;overflow:auto">'+qlHtml(k,'')+'</div><button class="btn sec" data-a="new" style="margin-top:10px">+ Novo item</button><button class="back" data-a="cl" style="display:block;margin:8px auto 0">Fechar</button>');setTimeout(()=>{const i=$('#qs');i&&i.focus()},80)}
 function filt(t){t=norm(t);document.querySelectorAll('#app .item[data-nm]').forEach(b=>{b.style.display=(!t||b.dataset.nm.includes(t))?'':'none'});
 document.querySelectorAll('#app h2').forEach(h=>{const n=h.nextElementSibling;if(!n||!n.classList.contains('item'))return;let x=n,any=false;while(x&&x.classList.contains('item')){if(x.style.display!=='none')any=true;x=x.nextElementSibling}h.style.display=any?'':'none'})}
-document.addEventListener('input',e=>{const t=e.target;if(t.id==='q'){qry=t.value;const r=$('#res');if(r)r.innerHTML=resHtml()}else if(t.id==='fq')filt(t.value);else if(t.id==='qs'){const l=$('#ql');if(l)l.innerHTML=qlHtml(view,t.value)}});
+document.addEventListener('input',e=>{const t=e.target;if(t.id==='q'){qry=t.value;const r=$('#res');if(r)r.innerHTML=resHtml()}else if(t.id==='fq')filt(t.value);else if(t.id==='qs'){const l=$('#ql');if(l)l.innerHTML=qlHtml(view,t.value)}else if(t.id==='fs'){const l=$('#fl');if(l)l.innerHTML=flHtml(view,t.value)}});
 /* views */
 function render(){$('#app').innerHTML=view==='home'?home():view==='tarefas'?tarefasView():view==='busca'?buscaView():secView();document.querySelectorAll('#isl button').forEach(x=>x.classList.toggle('on',(x.dataset.n==='home'&&view==='home')||(x.dataset.n==='itens'&&mgr&&view!=='home')||(x.dataset.n==='tarefas'&&view==='tarefas')||(x.dataset.n==='busca'&&view==='busca')))}
 function home(){
@@ -193,26 +196,48 @@ function secView(){return mgr?mgrView():secView0()}
 function secView0(){
 const k=view,E=S.entries[k],T=totals(k);
 return '<button class="back" data-a="home">‹ Voltar</button><h1>'+SECS[k].nome+'</h1>'+'<div class="row" style="margin-bottom:6px"><input id="fq" type="search" placeholder="Pesquisar nesta seção..." autocomplete="off"><button class="btn sec" data-a="gor" style="flex:none;width:auto;padding:11px 14px">Registros ('+E.length+')</button></div>'+
-itemsHtml(k)+
+'<button class="btn" data-a="pfo" style="margin:4px 0 6px">📷 Foto primeiro (teste)</button>'+itemsHtml(k)+
 '<button class="btn sec" data-a="new">+ Novo item</button>'+
-'<h2 id="regs">Registros</h2>'+(E.length?'<p style="color:var(--mut);font-size:13px;margin:-2px 0 8px">Toque na foto para trocar.</p>':'')+(E.length?E.slice().sort((a,b)=>NC(a.item,b.item)).map(e=>'<div class="ent">'+(e.thumb?'<img data-a="rph" data-id="'+e.id+'" src="'+e.thumb+'" alt="" decoding="async">':'<div class="ph" data-a="rph" data-id="'+e.id+'"></div>')+'<div class="nm">'+esc(e.item)+(pes(k,e)[1]>1?'<small style="display:block;color:var(--mut);font-weight:400">Pesagem '+pes(k,e)[0]+' de '+pes(k,e)[1]+'</small>':'')+'</div><input class="nin" inputmode="decimal" value="'+fmtU(e.qty,uOf(k,e.item))+'" data-a="q" data-id="'+e.id+'"><button class="x" data-a="del" data-id="'+e.id+'" aria-label="Remover">×</button></div>').join(''):'<p style="color:var(--mut)">Nenhum registro ainda.</p>')+
+'<h2 id="regs">Registros</h2>'+(E.length?'<p style="color:var(--mut);font-size:13px;margin:-2px 0 8px">Toque na foto para ampliar.</p>':'')+(E.length?E.slice().sort((a,b)=>NC(a.item,b.item)).map(e=>'<div class="ent">'+(e.thumb?'<img data-a="rph" data-id="'+e.id+'" src="'+e.thumb+'" alt="" decoding="async">':'<div class="ph" data-a="rph" data-id="'+e.id+'"></div>')+'<div class="nm">'+esc(e.item)+(pes(k,e)[1]>1?'<small style="display:block;color:var(--mut);font-weight:400">Pesagem '+pes(k,e)[0]+' de '+pes(k,e)[1]+'</small>':'')+'</div><input class="nin" inputmode="decimal" value="'+fmtU(e.qty,uOf(k,e.item))+'" data-a="q" data-id="'+e.id+'"><button class="x" data-a="del" data-id="'+e.id+'" aria-label="Remover">×</button></div>').join(''):'<p style="color:var(--mut)">Nenhum registro ainda.</p>')+
 (T.length?'<h2>Resumo</h2><div class="sum">'+T.map(t=>'<div><span>'+esc(t.n)+(t.c?' <small style="color:var(--mut)">#'+esc(t.c)+'</small>':'')+(t.p.length>1?' <small style="color:var(--mut)">('+t.p.map(fmt).join(' + ')+')</small>':'')+'</span><b>'+fmtU(t.q,t.u)+' '+t.u+'</b></div>').join('')+'</div>':'')+
 (E.length?'<div style="margin-top:16px"><button class="btn dg" data-a="clr">'+(armed?'Toque de novo para apagar tudo':'Novo relatório (limpar)')+'</button></div>':'')}
 function openSheet(h){$('#sin').innerHTML=h;$('#sheet').classList.add('on')}
-function closeSheet(){$('#sheet').classList.remove('on');sheet=null;photo=null;pend=null}
+function closeSheet(){$('#sheet').classList.remove('on');sheet=null;photo=null;pend=null;pfm=null;repl=null}
 function regSheet(i){const it=S.items[view][i];sheet={i};photo=null;const ex=S.entries[view].filter(e=>e.item===it.n),tot=ex.reduce((s,e)=>s+e.qty,0);
 openSheet('<h1 style="margin:0">'+esc(it.n)+'</h1>'+(ex.length?'<p style="color:var(--mut);margin:4px 0 0">'+ex.length+' pesagem'+(ex.length>1?'ns':'')+' registrada'+(ex.length>1?'s':'')+' | total '+fmt(tot)+' '+UL[it.u]+'</p>':'')+'<label>Código do produto</label><input id="cod" value="'+esc(it.c)+'" placeholder="Digite o código"><label>Foto</label><button class="btn sec" data-a="ph">Tirar / escolher foto</button><img id="prev" alt=""><label>Quantidade ('+UL[it.u]+')</label><input id="qty" class="nin" inputmode="decimal" placeholder="Ex.: 1,080"><button class="btn" data-a="add" style="margin-top:16px">Salvar e fechar</button><button class="btn sec" data-a="more" style="margin-top:8px">+ Adicionar outra pesagem</button><button class="back" data-a="cl" style="display:block;margin:10px auto 0">Cancelar</button>')}
 function newSheet(){sheet={n:1};openSheet('<h1 style="margin:0">Novo item</h1><label>Nome</label><input id="nn">'+(view==='pele'?'<select id="nu" style="display:none">':'<label>Unidade</label><select id="nu">')+'<option value="un">Unidade (un)</option><option value="kg">Peso (kg)</option><option value="cx">Caixa (cx)</option></select>'+(view==='pele'?'<label>Grupo</label><select id="ng"><option value="Traseiro">Traseiro</option><option value="Dianteiro">Dianteiro</option><option value="Caixaria">Caixaria</option></select>':'')+'<label>Código do produto</label><input id="cod" placeholder="Digite o código"><div class="row" style="margin-top:16px"><button class="btn sec" data-a="cl">Cancelar</button><button class="btn" data-a="sn">Salvar item</button></div>')}
+/* fornecedores da semana */
+const DIAS=['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'],ORD=[1,2,3,4,5,6,0];
+const wk=()=>{const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-((d.getDay()+6)%7));return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()};
+function dayOpts(sel){return '<option value="">Sem dia definido</option>'+ORD.map(d=>'<option value="'+d+'"'+(String(sel)===String(d)?' selected':'')+'>'+DIAS[d]+'</option>').join('')}
+function tabsHtml(){const n=(S.forn||[]).filter(f=>f.rec!==wk()).length,f=tsub==='forn';return '<div class="row" style="margin-bottom:12px"><button class="btn'+(f?' sec':'')+'" data-a="tsub" data-s="tarefas" style="padding:12px 8px;font-size:14px">Tarefas</button><button class="btn'+(f?'':' sec')+'" data-a="tsub" data-s="forn" style="padding:12px 8px;font-size:14px">Fornecedores da semana'+(n?' ('+n+')':'')+'</button></div>'}
+function fornRow(f){const ok=f.rec===wk();return '<div class="trow"><button class="tk'+(ok?' dn':'')+'" data-a="fr" data-id="'+f.id+'"><span class="ck">✓</span><span class="tn">'+esc(f.n)+(f.o?'<small style="display:inline-block;width:100%;font-weight:400">'+esc(f.o)+'</small>':'')+'</span><small>'+(ok?'Chegou':'A receber')+'</small></button><button class="x ed" data-a="fe" data-id="'+f.id+'" aria-label="Editar">✎</button><button class="x" data-a="fd" data-id="'+f.id+'" aria-label="Excluir">×</button></div>'}
+function fornView(){const L=S.forn||[],hj=String(new Date().getDay());
+const grp=(t,r,hoje)=>r.length?'<h2>'+t+(hoje?' · hoje':'')+'</h2><div class="sum">'+r.map(fornRow).join('')+'</div>':'';
+return '<div class="row"><input id="nfn" placeholder="Novo fornecedor, ex.: Wictor" enterkeyhint="done" autocomplete="off"><select id="nfd" style="flex:none;width:128px">'+dayOpts(fdl)+'</select><button class="btn" data-a="fa" style="flex:none;width:56px;padding:12px" aria-label="Adicionar">+</button></div>'+
+(L.length?ORD.map(d=>grp(DIAS[d],L.filter(f=>String(f.d)===String(d)),String(d)===hj)).join('')+grp('Sem dia definido',L.filter(f=>f.d===''||f.d==null),false)+'<p style="color:var(--mut);font-size:13px;margin-top:14px">Toque no fornecedor quando ele chegar. A lista volta para "A receber" toda segunda-feira.</p>':'<p style="color:var(--mut)">Nenhum fornecedor ainda. Digite o nome acima e escolha o dia em que ele costuma vir.</p>')}
+function addForn(){const i=$('#nfn'),n=(i&&i.value||'').trim();if(!n){toast('Digite o fornecedor');return}const d=$('#nfd').value;fdl=d;S.forn.push({id:Date.now()+Math.random(),n,d,o:'',rec:''});save();render();const x=$('#nfn');x&&x.focus()}
+function fornSheet(id){const f=id?S.forn.find(x=>String(x.id)===String(id)):null;sheet={f:f?f.id:0};
+openSheet('<h1 style="margin:0">'+(f?'Editar fornecedor':'Novo fornecedor')+'</h1><label>Fornecedor</label><input id="fnm" value="'+esc(f?f.n:'')+'" autocomplete="off"><label>Dia da semana</label><select id="fdy">'+dayOpts(f?f.d:'')+'</select><label>Observação (opcional)</label><input id="fob" value="'+esc(f?f.o||'':'')+'" placeholder="Ex.: traz folhagem e FLV" autocomplete="off"><button class="btn" data-a="fnsv" style="margin-top:16px">Salvar</button><div class="row" style="margin-top:8px"><button class="btn sec" data-a="cl">Cancelar</button>'+(f?'<button class="btn dg" data-a="fnde">Excluir</button>':'')+'</div>')}
+/* foto primeiro (teste) */
+function fotoSheetA(){sheet={pf:1};pfm='first';photo=null;repl=null;openSheet('<h1 style="margin:0">Foto do item</h1><p style="color:var(--mut)">'+esc(SECS[view].nome)+': tire a foto primeiro. Depois você escolhe o item e informa o peso.</p><button class="btn" data-a="ptake" style="margin-top:8px">Tirar foto</button><button class="back" data-a="cl" style="display:block;margin:10px auto 0">Cancelar</button>')}
+function flHtml(k,t){t=norm(t||'');const r=sorted(S.items[k]).filter(p=>!t||norm(p[0].n+' '+p[0].c).includes(t));return r.length?r.map(p=>'<button class="item'+(sheet&&p[1]===sheet.sel?' sel':'')+'" data-a="fpick" data-i="'+p[1]+'"><span>'+esc(p[0].n)+'<small>'+(p[0].g?esc(p[0].g)+' | ':'')+(p[0].c?'Código '+esc(p[0].c):'sem código')+'</small></span><span class="tag">'+UL[p[0].u]+'</span></button>').join(''):'<p style="color:var(--mut)">Nenhum item.</p>'}
+function fotoSheetB(){const k=view;sheet={pf:2,sel:null};openSheet('<h1 style="margin:0 0 8px">Escolha o item</h1><img id="fpv" src="'+photo.full+'" alt="" style="width:100%;height:110px;object-fit:cover;border-radius:12px;display:block"><button class="back" data-a="ptake" style="padding:8px 0">Trocar foto</button><input id="fs" type="search" placeholder="Pesquisar em '+esc(SECS[k].nome)+'..." autocomplete="off"><div id="fl" style="margin-top:8px;max-height:30vh;overflow:auto">'+flHtml(k,'')+'</div><label id="fql">Peso / quantidade</label><input id="fqty" class="nin" inputmode="decimal" placeholder="Ex.: 1,080"><button class="btn" data-a="fsv" style="margin-top:16px">Salvar e fechar</button><button class="btn sec" data-a="fsn" style="margin-top:8px">Salvar e fotografar próximo</button><button class="back" data-a="cl" style="display:block;margin:10px auto 0">Cancelar</button>')}
+function saveFirst(){const k=view,i=sheet&&sheet.sel,it=i==null?null:S.items[k][i];if(!it){toast('Escolha o item');return false}const q=num($('#fqty').value);if(q<=0){toast('Informe o peso');return false}if(!photo){toast('Tire a foto primeiro');return false}
+const id=Date.now()+Math.random();S.entries[k].push({id,item:it.n,qty:q,thumb:photo.thumb,ph:1});phPut(id,photo.full);save();return true}
+/* ver foto do registro */
+async function viewPhoto(id){const k=view,en=S.entries[k].find(x=>String(x.id)===String(id));if(!en)return;const u=uOf(k,en.item),p=pes(k,en),f=en.ph?await phGet(en.id):null,src=f||en.thumb;
+sheet={vp:id};openSheet('<h1 style="margin:0">'+esc(en.item)+'</h1><p style="color:var(--mut);margin:4px 0 10px">'+fmtU(en.qty,u)+' '+u+(p[1]>1?' | pesagem '+p[0]+' de '+p[1]:'')+'</p>'+(src?'<img src="'+src+'" alt="" style="width:100%;max-height:62vh;object-fit:contain;border-radius:12px;background:var(--bd);display:block">':'<p style="color:var(--mut)">Este registro está sem foto.</p>')+'<button class="btn sec" data-a="vrep" data-id="'+en.id+'" style="margin-top:12px">'+(src?'Trocar foto':'Adicionar foto')+'</button><button class="back" data-a="cl" style="display:block;margin:10px auto 0">Fechar</button>')}
 /* actions */
 document.addEventListener('click',async ev=>{
-const b=ev.target.closest('[data-a]');if(!b){if(ev.target.id==='sheet')closeSheet();return}
+const b=ev.target.closest('[data-a]');if(!b){if(ev.target.id==='sheet'&&!(sheet&&sheet.pf===2))closeSheet();return}
 const a=b.dataset.a,k=view;
 if(a==='open'){view=b.dataset.k;mgr=false;armed=false;render();scrollTo(0,0)}
 else if(a==='home'){view='home';mgr=false;render()}
 else if(a==='reg')regSheet(+b.dataset.i);
 else if(a==='th'){const m=b.dataset.m;try{if(m==='auto')localStorage.removeItem('dsc-theme');else localStorage.setItem('dsc-theme',m)}catch(x){}if(m==='auto')document.documentElement.removeAttribute('data-theme');else document.documentElement.setAttribute('data-theme',m);render()}
 else if(a==='tk'){S.done=S.done||{};if(isDone(b.dataset.k))delete S.done[b.dataset.k];else S.done[b.dataset.k]=dt();save();render()}
-else if(a==='fab'){if(view==='tarefas'){const i=$('#ntk');if(i){scrollTo(0,0);i.focus()}}else if(view==='busca'){const i=$('#q');i&&i.focus()}else if(isSec()){if(mgr)newSheet();else quickSheet(view)}else need(kk=>{view=kk;mgr=false;render();quickSheet(kk)})}
+else if(a==='fab'){if(view==='tarefas'){if(tsub==='forn')fornSheet();else{const i=$('#ntk');if(i){scrollTo(0,0);i.focus()}}}else if(view==='busca'){const i=$('#q');i&&i.focus()}else if(isSec()){if(mgr)newSheet();else quickSheet(view)}else need(kk=>{view=kk;mgr=false;render();quickSheet(kk)})}
 else if(a==='qr'){closeSheet();regSheet(+b.dataset.i)}
 else if(a==='sr'){view=b.dataset.k;mgr=false;render();regSheet(+b.dataset.i)}
 else if(a==='gor'){const r=$('#regs');r&&r.scrollIntoView({behavior:'smooth'})}
@@ -233,7 +258,20 @@ else if(n==='regs')need(kk=>{view=kk;mgr=false;render();setTimeout(()=>{const r=
 else if(a==='ps'){const f=pend;closeSheet();f&&f(b.dataset.k)}
 else if(a==='done'){mgr=false;render();scrollTo(0,0)}
 else if(a==='edit')editSheet(+b.dataset.i);
-else if(a==='rph'){repl=b.dataset.id;$('#pf').click()}
+else if(a==='rph')await viewPhoto(b.dataset.id);
+else if(a==='vrep'){closeSheet();repl=b.dataset.id;$('#pf').click()}
+else if(a==='pfo'){fotoSheetA();$('#pf').click()}
+else if(a==='ptake'){repl=null;$('#pf').click()}
+else if(a==='fpick'){sheet.sel=+b.dataset.i;document.querySelectorAll('#fl .item').forEach(x=>x.classList.toggle('sel',+x.dataset.i===sheet.sel));const it=S.items[k][sheet.sel];$('#fql').textContent=it.u==='kg'?'Peso de '+it.n+' (kg)':'Quantidade de '+it.n+' ('+UL[it.u]+')';const q=$('#fqty');q&&q.focus()}
+else if(a==='fsv'){if(saveFirst()){closeSheet();render();toast('Registro adicionado')}}
+else if(a==='fsn'){if(saveFirst()){render();fotoSheetA();$('#pf').click();toast('Registro salvo. Tire a próxima foto.')}}
+else if(a==='tsub'){tsub=b.dataset.s;render()}
+else if(a==='fa')addForn();
+else if(a==='fr'){const f=S.forn.find(x=>String(x.id)===b.dataset.id);if(f){f.rec=f.rec===wk()?'':wk();save();render()}}
+else if(a==='fe')fornSheet(b.dataset.id);
+else if(a==='fd'){if(!b.dataset.arm){b.dataset.arm=1;b.textContent='Excluir?';b.style.fontSize='13px';return}S.forn=S.forn.filter(x=>String(x.id)!==b.dataset.id);save();render()}
+else if(a==='fnsv'){const n=$('#fnm').value.trim();if(!n){toast('Informe o fornecedor');return}const d=$('#fdy').value,o=$('#fob').value.trim(),f=sheet.f?S.forn.find(x=>String(x.id)===String(sheet.f)):null;if(f){f.n=n;f.d=d;f.o=o}else S.forn.push({id:Date.now()+Math.random(),n,d,o,rec:''});save();closeSheet();render()}
+else if(a==='fnde'){if(!b.dataset.arm){b.dataset.arm=1;b.textContent='Toque de novo para excluir';return}S.forn=S.forn.filter(x=>String(x.id)!==String(sheet.f));save();closeSheet();render();toast('Fornecedor excluído')}
 else if(a==='se'){const L=S.items[k],it=L[sheet.e],n=$('#nn').value.trim();if(!n){toast('Informe o nome');return}
 if(L.some((x,j)=>j!==sheet.e&&x.n.toLowerCase()===n.toLowerCase())){toast('Já existe um item com esse nome');return}
 const old=it.n;it.n=n;it.c=$('#cod').value.trim();if(k==='pele')it.g=$('#ng').value;else it.u=$('#nu').value;
@@ -244,7 +282,7 @@ if(!b.dataset.arm){b.dataset.arm=1;b.textContent='Toque de novo para excluir';re
 L.splice(sheet.e,1);save();closeSheet();render();toast('Item excluído')}
 else if(a==='new')newSheet();
 else if(a==='cl')closeSheet();
-else if(a==='ph')$('#pf').click();
+else if(a==='ph'){repl=null;$('#pf').click()}
 else if(a==='add'||a==='more'){const it=S.items[k][sheet.i],q=num($('#qty').value);if(q<=0){toast('Informe a quantidade');return}
 it.c=$('#cod').value.trim();{const id=Date.now()+Math.random();S.entries[k].push({id,item:it.n,qty:q,thumb:photo?photo.thumb:null,ph:photo?1:0});if(photo)phPut(id,photo.full)}save();if(a==='more'){const i=sheet.i;render();regSheet(i);toast('Pesagem salva. Registre a próxima.')}else{closeSheet();render();toast('Registro adicionado')}}
 else if(a==='sn'){const n=$('#nn').value.trim();if(!n){toast('Informe o nome');return}
@@ -260,7 +298,7 @@ else if(a==='rs'){closeSheet();$('#rf').click()}
 document.addEventListener('change',e=>{const t=e.target;if(t.dataset&&t.dataset.a==='q'){const en=S.entries[view].find(x=>String(x.id)===t.dataset.id);const q=num(t.value);if(en&&q>0){en.qty=q;save()}else toast('Informe um valor maior que zero');render()}});
 document.addEventListener('input',e=>{const t=e.target;if(t.classList&&t.classList.contains('nin')){let v=t.value.replace(/[^\d.,]/g,'').replace(/\./g,',');const i=v.indexOf(',');if(i>-1)v=v.slice(0,i+1)+v.slice(i+1).replace(/,/g,'');if(v!==t.value)t.value=v}});
 document.addEventListener('focusin',e=>{const t=e.target;if(t.classList&&t.classList.contains('nin'))setTimeout(()=>{try{t.select()}catch(x){}},30)});
-$('#pf').addEventListener('change',async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;photo=await compress(f);if(repl){const en=S.entries[view].find(x=>String(x.id)===repl);repl=null;if(en&&photo){en.thumb=photo.thumb;en.ph=1;phPut(en.id,photo.full);save();render();toast('Foto trocada')}photo=null;return}const p=$('#prev');if(p&&photo){p.src=photo.full;p.style.display='block'}});
+$('#pf').addEventListener('change',async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;const prevPh=photo;photo=await compress(f);if(!photo&&sheet&&sheet.pf===2)photo=prevPh;if(repl){const en=S.entries[view].find(x=>String(x.id)===repl);repl=null;if(en&&photo){en.thumb=photo.thumb;en.ph=1;phPut(en.id,photo.full);save();render();toast('Foto trocada')}photo=null;return}if(pfm==='first'&&sheet&&sheet.pf){if(!photo){toast('Não foi possível ler a foto');return}if(sheet.pf===2){const pv=$('#fpv');pv&&(pv.src=photo.full);toast('Foto trocada');return}fotoSheetB();return}const p=$('#prev');if(p&&photo){p.src=photo.full;p.style.display='block'}});
 $('#rf').addEventListener('change',e=>{const f=e.target.files[0];e.target.value='';if(!f)return;const r=new FileReader();r.onload=async()=>{try{const v=JSON.parse(r.result);if(!v.items||!v.entries)throw 0;const ph=v.photos||{};delete v.photos;S=v;migrate();for(const k of Object.keys(S.entries))for(const e of S.entries[k])if(ph[String(e.id)]){phPut(e.id,ph[String(e.id)]);if(!e.thumb)e.thumb=await thumbOf(ph[String(e.id)]);e.ph=1}await migratePh();save();view='home';render();toast('Backup restaurado')}catch(x){toast('Arquivo de backup inválido')}};r.readAsText(f)});
 async function dl(name,data){const blob=data instanceof Blob?data:new Blob([data],{type:'application/json'});
 try{const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),8000);return true}catch(e){toast('Não foi possível salvar');return false}}
